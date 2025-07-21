@@ -8,7 +8,7 @@ app.use(express.json());
 
 const pool = new Pool({
   user: 'fateen',
-  host: 'localhost',
+  host: '*',
   database: 'mytestdb',
   password: 'changeme',
   port: 5432,
