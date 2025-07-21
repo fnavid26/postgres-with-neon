@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/expenses');
+        const response = await axios.get('api/expenses');
         setExpenses(response.data);
       } catch (error) {
         console.error('Error fetching expenses:', error);
@@ -21,7 +21,7 @@ function App() {
 
   const addExpense = async () => {
     const newExpense = { description, amount, category, expense_date: new Date().toISOString().slice(0,10) };
-    const res = await axios.post('http://localhost:3001/expenses', newExpense);
+    const res = await axios.post('api/expenses', newExpense);
     setExpenses([res.data, ...expenses]);
     setDescription(''); setAmount(''); setCategory('');
   };
