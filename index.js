@@ -23,10 +23,10 @@ app.get('/expenses', async (req, res) => {
   res.json(rows);
 });
 app.post('/expenses', async (req, res) => {
-  const { expense_date, amount, description } = req.body;
+  const { expense_date, amount, description, category } = req.body;
   const result = await pool.query(
-    'INSERT INTO expenses (expense_date, amount, description) VALUES ($1, $2, $3) RETURNING *',
-    [expense_date, amount, description]
+    'INSERT INTO expenses (expense_date, amount, description, category) VALUES ($1, $2, $3, $4) RETURNING *',
+    [expense_date, amount, description, category]
   );
   res.status(201).json(result.rows[0]);
 });
