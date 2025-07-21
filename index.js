@@ -30,7 +30,7 @@ app.post('/api/expenses', async (req, res) => {
   );
   res.status(201).json(result.rows[0]);
 });
-app.delete('api/expenses/:id', async (req, res) => {
+app.delete('/api/expenses/:id', async (req, res) => {
   const { id } = req.params;
   await pool.query('DELETE FROM expenses WHERE id = $1', [id]);
   res.status(204).send();
