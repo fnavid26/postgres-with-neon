@@ -38,19 +38,26 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-    - name: Deploy to EC2 via SSH
-      uses: appleboy/ssh-action@v1
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd /home/ubuntu/expense-tracker-api  # adjust this to your folder on EC2
-          git pull origin main
-          
-          npm install
-          pm2 restart backend || pm2 start index.js --name backend
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /home/ubuntu
+            if [ ! -d "expense-tracker-api" ]; then
+              git clone https://github.com/fnavid26/postgres-with-neon.git expense-tracker-api
+            else
+              cd expense-tracker-api
+              git pull origin main
+            fi
 
-          cd /home/ubuntu/expense-tracker-api/expense-tracker-frontend
-          npm install
-          npm run build
+            cd /home/ubuntu/expense-tracker-api/
+            npm install
+            pm2 restart backend || pm2 start node index.js --name backend
+
+            cd /home/ubuntu/expense-tracker-api/expense-tracker-frontend
+            npm install
+            pm2 restart frontend || pm2 start npm --name frontend -- run dev
+
