@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js CI & Deploy
 
 on:
   push:
@@ -19,10 +19,38 @@ jobs:
       with:
         node-version: 20
 
-    - name: Install dependencies
+    - name: Install dependencies (root)
       run: npm install
 
-    
+    # If you have separate frontend/backend folders:
+    - name: Install backend dependencies
+      run:  npm install
+
+    - name: Install frontend dependencies
+      run: cd expense-tracker-frontend && npm install
 
     # - name: Run tests (optional)
     #   run: npm test
+
+  deploy:
+    needs: build  # deploy only if build passes
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/expense-tracker-api  # adjust this to your folder on EC2
+          git pull origin main
+          
+          npm install
+          pm2 restart backend || pm2 start index.js --name backend
+
+          cd /home/ubuntu/expense-tracker-api/expense-tracker-frontend
+          npm install
+          npm run build
