@@ -7,10 +7,10 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  user: 'fateen',
-  host: 'localhost',
-  database: 'mytestdb',
-  password: 'changeme',
+  user: 'postgres',
+  host: 'expense-tracker-db.c7w46q6q83om.us-west-1.rds.amazonaws.com',
+  database: 'postgres',
+  password: '$h!$h_kebab135',
   port: 5432,
 });
 

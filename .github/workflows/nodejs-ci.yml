@@ -24,7 +24,7 @@ jobs:
 
     # If you have separate frontend/backend folders:
     - name: Install backend dependencies
-      run:  npm install
+      run: npm install
 
     - name: Install frontend dependencies
       run: cd expense-tracker-frontend && npm install
@@ -36,6 +36,12 @@ jobs:
     needs: build  # deploy only if build passes
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    env:
+      DB_HOST: ${{ secrets.RDS_HOST }}
+      DB_USER: ${{ secrets.RDS_USER }}
+      DB_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+      DB_NAME: mytestdb
 
     steps:
       - name: Deploy to EC2 via SSH
@@ -60,4 +66,3 @@ jobs:
             cd /home/ubuntu/expense-tracker-api/expense-tracker-frontend
             npm install
             pm2 restart frontend || pm2 start npm --name frontend -- run dev
-
