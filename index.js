@@ -12,6 +12,9 @@ const pool = new Pool({
   database: 'postgres',
   password: '$h!$h_kebab135',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 app.get('/', (req, res) => {
